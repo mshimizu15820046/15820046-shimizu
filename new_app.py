@@ -47,13 +47,16 @@ for a in range(68):
         if s.count('成功') >= 2:
             print('\033[32m'+ '検出成功' +'\033[0m')
         else:
-            print('\033[31m'+'検出失敗'+'\033[0m')
+            print('\033[31m' + '検出失敗' + '\033[0m')
         
         print()
         print('併置型駄洒落か検証')
         detected4, tane_word, henkei_word = heich(lines)
-        print('判定結果：' + detected4)
-        print('主表現：' + tane_word)
+        if detected4=='成功':
+            print('判定結果：' + '\033[32m' + detected4 + '\033[0m')
+        else:
+            print('判定結果：' + '\033[31m' + detected4 + '\033[0m')
+        print('種表現：' + tane_word)
         print('変形表現：' + henkei_word)
         print()
 

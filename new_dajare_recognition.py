@@ -53,7 +53,7 @@ class EditDistanceUtil():
     elif t == "ッ":
       return "ッ"
     else:
-      #print(text, "no match")
+      print(text, "no match")
       return text
 
     #モーラリストを母音のリストに変換
@@ -68,7 +68,7 @@ class EditDistanceUtil():
     elif t == "ッ":
       return "ッ"
     else:
-      #print(text, "no matchggggggggggggg")
+      print(text, "no matchggggggggggggg")
       return text
 
   #長音を母音に変換
@@ -262,7 +262,7 @@ class EditDistanceUtil():
     elif t == "ー":
       return "-"
     else:
-      #print(text, "")
+      print(text, "")
       return text
   #カナ文字列を子音にして返す
   def kana2consonant(self, kana_list):
@@ -351,6 +351,7 @@ def heich(text):
   tane_word = ""
   henkei_word = ""
   mora_henkei_word = ""
+  tane_start_index = 0 #追加
   #print("入力:",text)          
   doc = nlp(text)
   #token.is_punct = Trueのトークンを削除（'、'や'？'など）
@@ -365,9 +366,9 @@ def heich(text):
   moras1 = yomi.parse(text) #moras:カタカナ文字列
   text_mora = edu.kana2consonant(moras1)
   text_mora.remove('\n')
-  #print("不要な語摘出後の入力:",text)
-  #print("カタカナに変換",moras1)
-  #print("アルファベットに変換",text_mora)
+  print("不要な語摘出後の入力:",text)
+  print("カタカナに変換",moras1)
+  print("アルファベットに変換",text_mora)
   doc = nlp(text)
 
   #----------種リストの取得-------------
@@ -387,7 +388,7 @@ def heich(text):
       lst1 = edu.kana2consonant(yomi.parse(token.text))
       lst1.remove('\n')
       mora_lst.append(lst1)
-  #print("形態素ごとのモーラリスト:",mora_lst) #種表現候補の形態素のリスト
+  print("形態素ごとのモーラリスト:",mora_lst) #種表現候補の形態素のリスト
 
   q_count = 0
   lst1 = edu.kana2consonant(moras1)
@@ -395,7 +396,7 @@ def heich(text):
   if 'q' in lst1:
       lst1 = [i for i in lst1 if i not in "q"] #すべてのq削除
 
-  #print("s1(入力文全体のモーラリスト)を出力:",mora_lst )
+  print("s1(入力文全体のモーラリスト)を出力:",mora_lst )
 
   # 種表現を探索
   t_lst1 = []
@@ -406,17 +407,18 @@ def heich(text):
       tane_str = "/".join(tane)
       if s1_str.count(tane_str) >= 2: #s1の形態素の中で2回以上出現する形態素を出力
           t_lst1.append(tane)
-          #print("s1の形態素の中で2回以上出現するモーラ列：", tane)
+          print("s1の形態素の中で2回以上出現するモーラ列：", tane)
       tane2 = "".join(tane) #taneを文字列に
       if tane2 in "".join(tane):  #2回以上出現するtaneを含む形態素を出力
           tt_lst.append(tane)
-  #print("s1の形態素の中で2回以上出現するモーラ列s2：",tt_lst)
+  print("s1の形態素の中で2回以上出現するモーラ列s2 ：",tt_lst)
 
   tane_res1 = ""
   max = 0
   if len(t_lst1) == 0 and len(tt_lst) == 0:  
       tt_lst = mora_lst[0]
-  #print("s3(種表現候補のトークン)を出力:",tane_res1) 
+  tane_res1 = tt_lst[0]
+  print("s3(種表現候補のトークン)を出力:",tane_res1) 
   tane_list = []
   tane = 0
 
@@ -452,11 +454,11 @@ def heich(text):
                   max_simi = jaro
                   ruizi_word = t
               threshold = jaro
-  #print("ruizi_word",ruizi_word)
+  print("ruizi_word",ruizi_word)
 
   #変形表現の閾値判定
   thres = "最適な音韻類似度"
-  #print("音韻類似度：",threshold)
+  print("音韻類似度：",threshold)
   if threshold < 0.6:
       thres = "不適切な音韻類似度"
   #else:
@@ -477,7 +479,7 @@ def heich(text):
           s2_qcons.append(t[0])
           s2_qvowel.append(t[2:])
   henkei_qtuple = contains(s1_qvowel,s2_qvowel)
-  #print("henkei_qtuple",henkei_qtuple)
+  print("henkei_qtuple",henkei_qtuple)
 
   #もしruizi_wordが見つからない場合のモーラ単位での変形表現取得
   if ruizi_word == "":
@@ -495,9 +497,10 @@ def heich(text):
                   ruizi_word = ev_list2[-1:]
               ruizi_word = t
               threshold = ev
-      #print("ruizi_word",ruizi_word)
+      print("ruizi_word",ruizi_word)
   #変形表現の閾値判定
-  #print("音韻類似度：",threshold)
+  thres = "最適な音韻類似度"
+  print("音韻類似度：",threshold)
   if threshold < 0.6:
       thres = "不適切な音韻類似度"
   #else:
@@ -514,13 +517,13 @@ def heich(text):
           tane_str = "/".join(tane)
           if s1_str.count(tane_str) >= 2: #s1の形態素の中で2回以上出現する形態素を出力
               t_lst1.append(tane)
-              #print("s1の形態素の中で2回以上出現するモーラ列：", tane)
+              print("s1の形態素の中で2回以上出現するモーラ列：  b", tane)
   # 種表現候補の中で最も文字数が多い形態素を出力
       for t in t_lst1:
           if max < len(t):
               max = len(t)
               tane_res1 = t
-      #print("s3(種表現候補のトークン)を再出力:",tane_res1 )
+      print("s3(種表現候補のトークン)を再出力:",tane_res1 )
       #入力文と種表現の母音リスト、子音リストの取得
       s1_cons = []
       s1_vowel = []
@@ -533,7 +536,7 @@ def heich(text):
           s2_cons.append(t[0])
           s2_vowel.append(t[2:])
       henkei_tuple = contains(s1_vowel,s2_vowel)
-      #print("henkei_tuple",henkei_tuple)
+      print("henkei_tuple",henkei_tuple)
       #音韻類似度計算によるモーラ単位アライメント（変形表現の取得）
       max_simi = 0
       ruizi_word = ""
@@ -553,10 +556,10 @@ def heich(text):
                       max_simi = jaro
                       ruizi_word = t
                       threshold = jaro
-      #print("ruizi_word",ruizi_word)
+      print("ruizi_word",ruizi_word)
       #変形表現の閾値判定
       thres = "最適な音韻類似度"
-      #print("音韻類似度：",threshold)
+      print("音韻類似度：",threshold)
       if threshold < 0.6:
           thres = "不適切な音韻類似度"
       #else:
@@ -571,14 +574,14 @@ def heich(text):
           tane = 1
           if tane == 1:
               tane_word = token.text
-              #print("日本語の種表現",tane_word)
+              print("日本語の種表現",tane_word)
               tane_start_index = text.find(tane_word)       #種表現開始インデックス
               tane_end_index = tane_start_index + len(tane_word)  #種表現終了インデックス
-              #print(tane_end_index)
+              print(tane_end_index)
               tane_start_index = str(tane_start_index)
               tane_end_index = str(tane_end_index)
               span_tane = "(" + tane_start_index + "," + tane_end_index + ")"
-              #print("span_tane:",span_tane)
+              print("span_tane:",span_tane)
 
               mora_tane_start_index = mora_lst.index(tane_res1)   #モーラでの種表現開始インデックス
               if mora_tane_start_index != 0:
@@ -587,7 +590,7 @@ def heich(text):
               mora_tane_start_index = str(mora_tane_start_index)
               mora_tane_end_index = str(mora_tane_end_index)
               mora_tane = "(" + mora_tane_start_index + "," + mora_tane_end_index + ")"
-              #print("mora_tane:",mora_tane)
+              print("mora_tane:",mora_tane)
               if len(ri) <= int(mora_tane_start_index):
                   mora_tane_start_index = int(mora_tane_start_index) - 1
               if ri[int(mora_tane_start_index)] != tane_res1[0]:
@@ -596,15 +599,15 @@ def heich(text):
                   mora_tane = "(" + str(mora_tane_start_index) + "," + str(mora_tane_end_index) + ")"
                   #if ri[int(mora_tane_start_index)] == tane_res1[0]:
                       #print
-              #print("mora_tane:",mora_tane)
+              print("mora_tane:",mora_tane)
               break;
       else:
           tane = 0
 
-
+  print("tane_res1",tane_res1) #追加
+  print("len(tane_res1)",len(tane_res1))　#追加len(tane_res1)
   # 種表現候補が分からない場合
   if len(tane_res1) == 0 or len(tane_res1) == 1: 
-      print('aaa') #注意
       lst = []
       
       # ハイフン削除
@@ -615,14 +618,13 @@ def heich(text):
       l2 = ["u" if l == "-" else l for l in lst1]
       lst.append(l2)
 
-      mora_henkei_end_index=  0 #追加
-      mora_henkei_start_index = 0　#追加
+      #mora_henkei_end_index=  0 #追加
+      #mora_henkei_start_index = 0　#追加
 
   # 種表現候補が分かった場合
   else:     
-      print('iii') #注意
       x1 = contains(ri, tane_res1)
-      #print("モーラ単位での種表現:", tane_res1)
+      print("モーラ単位での種表現:", tane_res1)
       #もしx1(変形表現のタプル)が見つからない場合
       if x1 == None:
       #ruizi_wordをもとに日本語の変形表現を取得
@@ -639,7 +641,7 @@ def heich(text):
                       break;
                   else:
                       break;
-          #print("日本語の変形表現を出力:",henkei_word)
+          print("日本語の変形表現を出力:",henkei_word)
           #span_henkeiの取得
           span_num = 0
           try:
@@ -649,14 +651,14 @@ def heich(text):
               henkei_start_index = 0
               henkei_end_index = 0
               span_num = 1
-              #print("span_henkei:", span_henkei)
+              print("span_henkei:", span_henkei)
           henkei_end_index = henkei_start_index + len(henkei_word)  #変形表現終了インデックス
           henkei_start_index = str(henkei_start_index)
           henkei_end_index = str(henkei_end_index)
           span_henkei = "(" + henkei_start_index + "," + henkei_end_index + ")"
           if span_num == 1:
               span_henkei = "None"
-          #print("span_henkei:",span_henkei)
+          print("span_henkei:",span_henkei)
           str_text = len(text)
           str_moras = len(moras1)
           #変形表現の開始位置、種表現の開始位置が同じ時
@@ -667,7 +669,7 @@ def heich(text):
               henkei_start_index = str(henkei_start_index)
               henkei_end_index = str(henkei_end_index)
               span_henkei = "(" + henkei_start_index + "," + henkei_end_index + ")"
-              #print("span_henkei修正後:",span_henkei)
+              print("span_henkei修正後:",span_henkei)
           #まだ同じとき
           if henkei_start_index == tane_start_index:
               kana_henkei_word = yomi.parse(henkei_word)
@@ -675,16 +677,15 @@ def heich(text):
               m_henkei_word.remove('\n')
               m_henkei_word="".join(m_henkei_word)#リストを文字列に
               henkei_start_index = moras1.find(kana_henkei_word)#変形表現開始インデックス修正
-              #print("henkei_start",henkei_start_index)
+              print("henkei_start",henkei_start_index)
               henkei_end_index = henkei_start_index + len(henkei_word)#変形表現終了インデックス修正
               span_henkei = "(" + str(henkei_start_index) + "," + str(henkei_end_index) + ")"
-              #print("span_henkei更に修正後:",span_henkei)
+              print("span_henkei更に修正後:",span_henkei)
 
           #モーラ単位での変形表現タプル取得
           #henkei_tupleがない場合
 
           if henkei_tuple == None:
-              print('none') #注意
               try:
                   mora_henkei_start_index = [i for i, x in enumerate(ri) if x == ruizi_word[0]] #ruizi_wordの最初の文字を出力
                   mora_henkei_start_index = mora_henkei_start_index[1]
@@ -697,14 +698,13 @@ def heich(text):
               mora_henkei = "(" + str(mora_henkei_start_index) + "," + str(mora_henkei_end_index) + ")" 
               if mora_num == 1:
                   mora_henkei = "None"
-              #print("mora_henkei",mora_henkei)
+              print("mora_henkei",mora_henkei)
 
           #henkei_tupleがある場合
           else:
           #[q]消してない場合
               if q_count == 0 and q_tane_henkei == 1:
-                  #print("henkei_tuple",henkei_tuple) 
-                  print('a') #注意
+                  print("henkei_tuple",henkei_tuple) 
                   mora_henkei_end_index = henkei_tuple[1]  
                   mora_henkei_end_index = str(mora_henkei_end_index)
                   mora_henkei_start_index = str(henkei_tuple[0])
@@ -715,14 +715,12 @@ def heich(text):
                           mora_henkei = "None"
                   else:
                       if ri[henkei_tuple[0]] != ruizi_word[0]:  #mora_henkeiの位置修正
-                        print('b') #注意
                         mora_henkei_start_index = int(henkei_tuple[0])
                         mora_henkei_end_index = int(henkei_tuple[1])
                         mora_henkei_start_index = mora_henkei_start_index - 1   #１つ前にする
                         mora_henkei_end_index = mora_henkei_end_index - 1
                         mora_henkei = "(" + str(mora_henkei_start_index) + "," + str(mora_henkei_end_index) + ")"
                         if ri[mora_henkei_start_index] != ruizi_word[0]:
-                          print('c') #注意
                           mora_henkei_start_index = int(mora_henkei_start_index)
                           mora_henkei_end_index = int(mora_henkei_end_index)
                           mora_henkei_start_index = mora_henkei_start_index + 2
@@ -730,28 +728,26 @@ def heich(text):
                           mora_henkei = "(" + str(mora_henkei_start_index) + "," + str(mora_henkei_end_index) + ")"
               #[q]消した場合
               else: 
-                  #print("henkei_qtuple",henkei_qtuple)
+                  print("henkei_qtuple",henkei_qtuple)
                   if henkei_qtuple == None:
-                    print('d') #注意
                     henkei_qtuple = henkei_tuple
                   mora_henkei_end_index = henkei_qtuple[1] + 1  #[q]を消した分、１つ増やす
                   mora_henkei_end_index = str(mora_henkei_end_index)
                   mora_henkei_start_index = str(henkei_qtuple[0])
                   mora_henkei = "(" + mora_henkei_start_index + "," + mora_henkei_end_index + ")"
-              #print("mora_henkeiaaa:",mora_henkei)
+              print("mora_henkeiaaa:",mora_henkei)
               #モーラ変形インデックスが正しく取れてるか判定
               mora_henkei_start_index = int(mora_henkei_start_index)
               mora_henkei_end_index = int(mora_henkei_end_index)
               mora_henkei_check = mora_henkei_end_index - mora_henkei_start_index
-              #print("mora_henkei_check:",mora_henkei_check)
+              print("mora_henkei_check:",mora_henkei_check)
               #修正
               if mora_henkei_check > len(henkei_word):
-                  print('e') #注意
                   mora_henkei_end_index = mora_henkei_end_index - 1
                   mora_henkei_start_index = str(mora_henkei_start_index)
                   mora_henkei_end_index = str(mora_henkei_end_index)
                   mora_henkei = "(" + mora_henkei_start_index + "," + mora_henkei_end_index + ")"
-                  #print("mora_henkei修正:",mora_henkei)
+                  print("mora_henkei修正:",mora_henkei)
               #elif mora_henkei_check == len(ruizi_word):
                   #print("同じ")
               #ruizi_wordがとれていない場合
@@ -759,18 +755,14 @@ def heich(text):
                   pass
               else:
                   if ri[int(mora_henkei_start_index)] == ruizi_word[0]: #start_indexが正しいため、end_indexも正しくする
-                      print('f') #注意
                       mora_henkei_end_index = int(mora_henkei_start_index) + len(ruizi_word) + 1
                       mora_henkei = "(" + str(mora_henkei_start_index) + "," + str(mora_henkei_end_index) + ")"
                   else:
-                      print('g') #注意
                       mora_henkei_start_index = int(mora_henkei_start_index) - 1
                       if ri[int(mora_henkei_start_index)] == ruizi_word[0]: #start_indexが正しいため、end_indexも正しくする
-                          print('h') #注意
                           mora_henkei_end_index = int(mora_henkei_start_index) + len(ruizi_word) + 1
                           mora_henkei = "(" + str(mora_henkei_start_index) + "," + str(mora_henkei_end_index) + ")"
                           if mora_henkei_end_index > len(ri):
-                              print('i') #注意
                               mora_henkei_end_index = int(mora_henkei_end_index) - 1
                 
           #不要な文字削除
@@ -781,7 +773,7 @@ def heich(text):
           if henkei_word == "":
               henkei_word = "None"
           #data["henkei extraction"][i] = henkei_word
-          #print("henkei_word;:",henkei_word)
+          print("henkei_word;:",henkei_word)
           #適切な併置型駄洒落かの処理
           if thres == "最適な音韻類似度":
               type_tane = 1
@@ -792,11 +784,11 @@ def heich(text):
               henkei_word = jaconv.hira2kata(henkei_word) #ひらがなをカタカナに変換
               if henkei_word not in text:
                   henkei_word = jaconv.kata2hira(henkei_word) #カタカナをひらがなに変換
-                  #print("henkei_word",henkei_word)
-              #else:
-                  #print("henkei_word;:",henkei_word)
-          #else:
-              #print("henkei_word;:",henkei_word)
+                  print("henkei_word",henkei_word)
+              else:
+                  print("henkei_word;:",henkei_word)
+          else:
+              print("henkei_word;:",henkei_word)
 
       # 通常取り出せている場合 
       else:
@@ -808,7 +800,7 @@ def heich(text):
           henkei_mozi = lst1[x1[0]:x1[1]]
           #x1番目のs1リストをx1番目の後の数字のモーラまで連結
           #henkei_listを取得
-          #print("x1,x2:",num1,num2)                         
+          print("x1,x2:",num1,num2)                         
           henkei_list = []
           c = 0             
           for t in mora_lst:
@@ -816,14 +808,14 @@ def heich(text):
                   try:
                       henkei_list.append(ri[num1])                 
                       num1 = num1 + 1
-                      #if num1 == num2 + 1:                   
-                          #print("henkei_list",henkei_list)                   
-                      #else:                     
-                          #print("henkei_list",henkei_list)                      
+                      if num1 == num2 + 1:                   
+                          print("henkei_list",henkei_list)                   
+                      else:                     
+                          print("henkei_list",henkei_list)                      
                   except:
                   ##print("IndexError")
                       break;
-          #print("henkei_list",henkei_list)
+          print("henkei_list",henkei_list)
           henkei = 0
           error = 0
           #モーラ単位の変形表現が1文字の場合うまく取れてないため、henkei_listに変える
@@ -837,17 +829,17 @@ def heich(text):
               #変形表現探索
               while tane_res1 != ruizi_word:
                   if ruizi_word == lst1:
-                      #print("変形表現の形態素を出力",ruizi_word)               
+                      print("変形表現の形態素を出力",ruizi_word)               
                       henkei = 1
                       if henkei == 1:
                           henkei_word = token.text
-                          #print("日本語の変形表現:",henkei_word)
+                          print("日本語の変形表現:",henkei_word)
                           break;
                       break;
                   else:
                       break;
               if lst1 == ruizi_word:
-                  #print("変形表現の形態素を出力",ruizi_word)
+                  print("変形表現の形態素を出力",ruizi_word)
                   henkei = 1
                   if henkei == 1:
                       henkei_word = token.text
@@ -885,7 +877,7 @@ def heich(text):
           tane_word = re.sub("\<.+", "", tane_word)
           henkei_word = henkei_word.replace('\n','')
           henkei_word = re.sub("\<.+", "", henkei_word)
-          #print("tane_word:",tane_word)
+          print("tane_word:",tane_word)
           s_henkei_word = henkei_word
           #適切な併置型駄洒落かの処理
           if thres == "最適な音韻類似度":
@@ -897,10 +889,10 @@ def heich(text):
               henkei_word = jaconv.hira2kata(henkei_word) #ひらがなをカタカナに変換
               if henkei_word not in text:
                   henkei_word = jaconv.kata2hira(henkei_word) #カタカナをひらがなに変換
-              #else:
-                  #print("henkei_word;:",henkei_word)
-          #else:
-              #print("henkei_word;:",henkei_word)
+              else:
+                  print("henkei_word;:",henkei_word)
+          else:
+              print("henkei_word;:",henkei_word)
 
           #span_taneの取得
           span_num = 0
@@ -911,14 +903,14 @@ def heich(text):
               henkei_start_index = 0
               henkei_end_index = 0
               span_num = 1
-              #print("span_henkei:", span_henkei)
+              print("span_henkei:", span_henkei)
           henkei_end_index = henkei_start_index + len(henkei_word)  #変形表現終了インデックス
           henkei_start_index = str(henkei_start_index)
           henkei_end_index = str(henkei_end_index)
           span_henkei = "(" + henkei_start_index + "," + henkei_end_index + ")"
           if span_num == 1:
               span_henkei = "None"
-          #print("span_henkei:",span_henkei)
+          print("span_henkei:",span_henkei)
           str_text = len(text)
           str_moras = len(moras1)
           #変形表現の開始位置、種表現の開始位置が同じ時
@@ -931,7 +923,7 @@ def heich(text):
               henkei_start_index = str(henkei_start_index)
               henkei_end_index = str(henkei_end_index)
               span_henkei = "(" + henkei_start_index + "," + henkei_end_index + ")"
-              #print("span_henkei修正後qq:",span_henkei)
+              print("span_henkei修正後qq:",span_henkei)
           #まだ同じとき
           if henkei_start_index == tane_start_index:
               kana_henkei_word = yomi.parse(henkei_word)
@@ -941,101 +933,83 @@ def heich(text):
               henkei_start_index = moras1.find(kana_henkei_word)#変形表現開始インデックス修正
               henkei_end_index = henkei_start_index + len(henkei_word)#変形表現終了インデックス修正
               span_henkei = "(" + str(henkei_start_index) + "," + str(henkei_end_index) + ")"
-              #print("span_henkei更に修正後:",span_henkei)
+              print("span_henkei更に修正後:",span_henkei)
           #モーラ単位での変形表現タプル取得
           if henkei_spe == 1:
-              print('j') #注意
               mora_henkei_end_index = x1[1] + 1
               mora_henkei_end_index = str(mora_henkei_end_index)
               mora_henkei_start_index = str(x1[0])
               mora_henkei = "(" + mora_henkei_start_index + "," + mora_henkei_end_index + ")"
-              #print("mora_henkei:",mora_henkei)
+              print("mora_henkei:",mora_henkei)
               #モーラ変形インデックスが正しく取れてるか判定
               mora_henkei_start_index = int(mora_henkei_start_index)
               mora_henkei_end_index = int(mora_henkei_end_index)
               mora_henkei_check = mora_henkei_end_index - mora_henkei_start_index
               if mora_henkei_check > len(henkei_word):
-                  print('k') #注意
                   mora_henkei_end_index = mora_henkei_end_index - 1
                   mora_henkei_start_index = str(mora_henkei_start_index)
                   mora_henkei_end_index = str(mora_henkei_end_index)
                   mora_henkei = "(" + mora_henkei_start_index + "," + mora_henkei_end_index + ")"
-                  #print("mora_henkei修正:",mora_henkei)
+                  print("mora_henkei修正:",mora_henkei)
               #elif mora_henkei_check == len(ruizi_word):
                   #print("同じ")
               if ruizi_word == "" or len(ruizi_word) == 1:
                   pass
               else:
                   if ri[int(mora_henkei_start_index)] == ruizi_word[0]: #start_indexが正しいため、end_indexも正しくする
-                      print('l') #注意
                       mora_henkei_end_index = int(mora_henkei_start_index) + len(ruizi_word) + 1
                       mora_henkei = "(" + str(mora_henkei_start_index) + "," + str(mora_henkei_end_index) + ")"
                   else:
-                      print('m') #注意
                       mora_henkei_start_index = int(mora_henkei_start_index) - 1
                       if ri[int(mora_henkei_start_index)] == ruizi_word[0]: #start_indexが正しいため、end_indexも正しくする
-                          print('n') #注意
                           mora_henkei_end_index = int(mora_henkei_start_index) + len(ruizi_word) + 1
                           mora_henkei = "(" + str(mora_henkei_start_index) + "," + str(mora_henkei_end_index) + ")"
                           if mora_henkei_end_index > len(ri):
-                              print('o') #注意
                               mora_henkei_end_index = int(mora_henkei_end_index) - 1
           else:
-              print('p') #注意
               mora_henkei_end_index = x1[1]
               mora_henkei_end_index = str(mora_henkei_end_index)
               mora_henkei_start_index = str(x1[0])
               mora_henkei = "(" + mora_henkei_start_index + "," + mora_henkei_end_index + ")"
-              #print("mora_henkei:",mora_henkei)
+              print("mora_henkei:",mora_henkei)
               #モーラ変形インデックスが正しく取れてるか判定
               mora_henkei_start_index = int(mora_henkei_start_index)
               mora_henkei_end_index = int(mora_henkei_end_index)
               mora_henkei_check = mora_henkei_end_index - mora_henkei_start_index
               if mora_henkei_check > len(henkei_word):
-                      print('q') #注意
                       mora_henkei_end_index = mora_henkei_end_index - 1
                       mora_henkei_start_index = str(mora_henkei_start_index)
                       mora_henkei_end_index = str(mora_henkei_end_index)
                       mora_henkei = "(" + mora_henkei_start_index + "," + mora_henkei_end_index + ")"
-                      #print("mora_henkei修正:",mora_henkei)
+                      print("mora_henkei修正:",mora_henkei)
               #elif mora_henkei_check == len(ruizi_word):
                   #print("同じ")
               if ri[int(mora_henkei_start_index)] == ruizi_word[0]: #start_indexが正しいため、end_indexも正しくする
-                  print('r') #注意
                   mora_henkei_end_index = int(mora_henkei_start_index) + len(ruizi_word) + 1
                   mora_henkei = "(" + str(mora_henkei_start_index) + "," + str(mora_henkei_end_index) + ")"
               else:
-                  print('s') #注意
                   mora_henkei_start_index = int(mora_henkei_start_index) - 1
                   if ri[int(mora_henkei_start_index)] == ruizi_word[0]: #start_indexが正しいため、end_indexも正しくする
-                      print('t') #注意
                       mora_henkei_end_index = int(mora_henkei_start_index) + len(ruizi_word) + 1
                       mora_henkei = "(" + str(mora_henkei_start_index) + "," + str(mora_henkei_end_index) + ")"
                       if mora_henkei_end_index > len(ri):
-                          print('u') #注意
                           mora_henkei_end_index = int(mora_henkei_end_index) - 1
               #ruizi_wordが見つからないまたは、1文字の時
               if ruizi_word == None or len(ruizi_word) == 1:
                   pass
               else:
                   if ri[int(mora_henkei_start_index)] == ruizi_word[0]: #start_indexが正しいため、end_indexも正しくする
-                      print('v') #注意
                       mora_henkei_end_index = int(mora_henkei_start_index) + len(ruizi_word) + 1
                       mora_henkei = "(" + str(mora_henkei_start_index) + "," + str(mora_henkei_end_index) + ")"
                   else:
-                      print('w') #注意
                       mora_henkei_start_index = int(mora_henkei_start_index) - 1
                       if ri[int(mora_henkei_start_index)] == ruizi_word[0]: #start_indexが正しいため、end_indexも正しくする
-                          print('x') #注意
                           mora_henkei_end_index = int(mora_henkei_start_index) + len(ruizi_word) + 1
                           mora_henkei = "(" + str(mora_henkei_start_index) + "," + str(mora_henkei_end_index) + ")"
                           if mora_henkei_end_index > len(ri):
-                              print('y') #注意
                               mora_henkei_end_index = int(mora_henkei_end_index) - 1
-  print('hello') #注意
   mora_henkei_check = int(mora_henkei_end_index) -int(mora_henkei_start_index)
   if len(henkei_word) != mora_henkei_check:
-      print('z') #注意
       mora_henkei_end_index = int(mora_henkei_end_index) - 1
   mora_henkei = "(" + str(mora_henkei_start_index) + "," + str(mora_henkei_end_index) + ")"
 
@@ -1050,7 +1024,7 @@ def heich(text):
   kana_henkei = yomi.parse(henkei_word)
   mora_henkei_word = edu.kana2consonant(kana_henkei)
   mora_henkei_word.remove('\n')
-  #print("種表現: " + tane_word + ", 変形表現:" + henkei_word + ", type:" + type + ", span_tane:" + span_tane + ", mora_tane:" + mora_tane + ", mora_tane_word:" + str(tane_res1) + ", span_henkei:" + span_henkei + ", mora_henkei:" + mora_henkei + ", mora_henkei_word:" + str(mora_henkei_word))
+  print("種表現: " + tane_word + ", 変形表現:" + henkei_word + ", type:" + type + ", span_tane:" + span_tane + ", mora_tane:" + mora_tane + ", mora_tane_word:" + str(tane_res1) + ", span_henkei:" + span_henkei + ", mora_henkei:" + mora_henkei + ", mora_henkei_word:" + str(mora_henkei_word))
   return(detected, tane_word, henkei_word)
 
 #パイプラインに追加

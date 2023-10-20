@@ -39,7 +39,7 @@ class EditDistanceUtil():
     elif t == "ッ":
       return "ッ"
     else:
-      print(text, "no match")
+      #print(text, "no match")
       return text
 
   #長音を母音に変換

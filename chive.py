@@ -62,7 +62,7 @@ def chive(dajare):
           for y in range(len(similar_words)):
             if float(similar_words[y][1]) >= 0.4:
               text1=similar_words[y][0]
-                #p#print(similar_words[y])
+                #pprint(similar_words[y])
 
               #類似度が高い単語と駄洒落文中の単語の音韻類似度を計算  
               for z in range(len(word2)):

@@ -351,6 +351,7 @@ def heich(text):
   tane_word = ""
   henkei_word = ""
   mora_henkei_word = ""
+  tane_start_index = 0 #追加
   #print("入力:",text)          
   doc = nlp(text)
   #token.is_punct = Trueのトークンを削除（'、'や'？'など）
@@ -498,6 +499,7 @@ def heich(text):
               threshold = ev
       #print("ruizi_word",ruizi_word)
   #変形表現の閾値判定
+  thres = "最適な音韻類似度"
   #print("音韻類似度：",threshold)
   if threshold < 0.6:
       thres = "不適切な音韻類似度"
@@ -615,8 +617,8 @@ def heich(text):
       l2 = ["u" if l == "-" else l for l in lst1]
       lst.append(l2)
 
-      #mora_henkei_end_index=  0 #追加
-      #mora_henkei_start_index = 0　#追加
+      mora_henkei_end_index = 0 #追加
+      mora_henkei_start_index = 0 #追加
 
   # 種表現候補が分かった場合
   else:     
@@ -768,24 +770,24 @@ def heich(text):
           henkei_word = henkei_word.replace('\n','')
           henkei_word = re.sub("\<.+", "", henkei_word)
           if henkei_word == "":
-              henkei_word = "None"
+            henkei_word = "None"
           #data["henkei extraction"][i] = henkei_word
           #print("henkei_word;:",henkei_word)
           #適切な併置型駄洒落かの処理
           if thres == "最適な音韻類似度":
-              type_tane = 1
-              type_henkei = 1
+            type_tane = 1
+            type_henkei = 1
           elif henkei_word == "None":
-              type_henkei = 0
+            type_henkei = 0
           if henkei_word not in text:
-              henkei_word = jaconv.hira2kata(henkei_word) #ひらがなをカタカナに変換
-              if henkei_word not in text:
-                  henkei_word = jaconv.kata2hira(henkei_word) #カタカナをひらがなに変換
-                  #print("henkei_word",henkei_word)
-              #else:
-                  #print("henkei_word;:",henkei_word)
-          #else:
+            henkei_word = jaconv.hira2kata(henkei_word) #ひらがなをカタカナに変換
+            if henkei_word not in text:
+              henkei_word = jaconv.kata2hira(henkei_word) #カタカナをひらがなに変換
+              #print("henkei_word",henkei_word)
+            #else:
               #print("henkei_word;:",henkei_word)
+          #else:
+            #print("henkei_word;:",henkei_word)
 
       # 通常取り出せている場合 
       else:
@@ -878,18 +880,18 @@ def heich(text):
           s_henkei_word = henkei_word
           #適切な併置型駄洒落かの処理
           if thres == "最適な音韻類似度":
-              type_tane = 1
-              type_henkei = 1
+            type_tane = 1
+            type_henkei = 1
           elif henkei_word == "None":
-              type_henkei = 0
+            type_henkei = 0
           if henkei_word not in text:
-              henkei_word = jaconv.hira2kata(henkei_word) #ひらがなをカタカナに変換
-              if henkei_word not in text:
-                  henkei_word = jaconv.kata2hira(henkei_word) #カタカナをひらがなに変換
-              #else:
-                  #print("henkei_word;:",henkei_word)
-          #else:
+            henkei_word = jaconv.hira2kata(henkei_word) #ひらがなをカタカナに変換
+            if henkei_word not in text:
+              henkei_word = jaconv.kata2hira(henkei_word) #カタカナをひらがなに変換
+            #else:
               #print("henkei_word;:",henkei_word)
+          #else:
+            #print("henkei_word;:",henkei_word)
 
           #span_taneの取得
           span_num = 0
