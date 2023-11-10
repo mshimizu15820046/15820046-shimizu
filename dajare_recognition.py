@@ -245,7 +245,7 @@ class EditDistanceUtil():
       return "p"+","+"i"
     elif t in "プ":
       return "p"+","+"u"
-    elif t in "ぺ":
+    elif t in "ペ":
       return "p"+","+"e"
     elif t in "ポ":
       return "p"+","+"o"
@@ -385,14 +385,59 @@ def heich(text):
   text_hira=convertKtoH(moras1)
   #print("ひらがなに変換",text_hira)
   #print("アルファベットに変換",text_mora)
+
+  text_lst =[]
+  del_lst = []
+  for i in range(len(text)):
+    text_lst.append(text[i])
+  for i in range(len(text_lst)):
+    if text_lst[i] == '<' and i not in del_lst:
+      del_lst.append(i)
+      for j in range(i+1, len(text_lst),1):
+        if text_lst[j] != '>' and text_lst[j] != '＞' and text_lst[j] != ')' and text_lst[j] !='）':
+          del_lst.append(j)
+        else:
+          del_lst.append(j)
+          break;
+    if text_lst[i] == '＜' and i not in del_lst:
+      del_lst.append(i)
+      for j in range(i+1, len(text_lst),1):
+        if text_lst[j] != '>' and text_lst[j] != '＞' and text_lst[j] != ')' and text_lst[j] !='）':
+          del_lst.append(j)
+        else:
+          del_lst.append(j)
+          break;
+    if text_lst[i] == '(' and i not in del_lst:
+      del_lst.append(i)
+      for j in range(i+1, len(text_lst),1):
+        if text_lst[j] != '>' and text_lst[j] != '＞' and text_lst[j] != ')' and text_lst[j] !='）':
+          del_lst.append(j)
+        else:
+          del_lst.append(j)
+          break;
+    if text_lst[i] == '（' and i not in del_lst:
+      del_lst.append(i)
+      for j in range(i+1, len(text_lst),1):
+        if text_lst[j] != '>' and text_lst[j] != '＞' and text_lst[j] != ')' and text_lst[j] !='）':
+          del_lst.append(j)
+        else:
+          del_lst.append(j)
+          break;
+  if del_lst:
+    print("del_lst:",del_lst)
+    for i in sorted(del_lst, reverse=True):
+      text_lst.pop(i)
+  text = ''.join(text_lst)
   doc = nlp(text)
-  print("doc:",doc)
 
   #----------種リストの取得-------------
   t_list = []
+  del_lst = []
+  doc_index = 0
+    
   for token in doc:
-      if token.pos_ in ["NOUN", "PROPN", "VERB", "ADJ"]:
-          t_list.append(token.text)
+    if token.pos_ in ["NOUN", "PROPN", "VERB", "ADJ"]:
+      t_list.append(token.text)
   
   #空白削除
   while '\u3000' in t_list:
@@ -404,7 +449,7 @@ def heich(text):
       t_tane1 = edu.kana2consonant(yomi.parse(tane))
       t_tane1.remove("\n")
       tane_lst.append(t_tane1)
-  print("種表現候補tane_lst：",tane_lst) #種表現候補
+  print("種表現候補tane_lst：",tane_lst) 
 
   mora_lst = []
   mora_jp_lst = []
@@ -414,7 +459,7 @@ def heich(text):
         lst1 = edu.kana2consonant(yomi.parse(token.text))
         lst1.remove('\n')
         mora_lst.append(lst1)
-  
+
   print("mora_jp_lst:",mora_jp_lst) #形態素日本語リスト
   print("形態素ごとのモーラリスト:",mora_lst) #形態素のリスト
 
@@ -443,9 +488,9 @@ def heich(text):
 
   #余計な[]を消す
   henkei_lst = [flatten(sublist) for sublist in henkei_lst]
-  print("henkei_lst:",henkei_lst)
-  print("henkei_jp_lst:",henkei_jp_lst)
-  print("henkei_elements_used:",henkei_elements_used)
+  #print("henkei_lst:",henkei_lst)
+  #print("henkei_jp_lst:",henkei_jp_lst)
+  #print("henkei_elements_used:",henkei_elements_used)
 
   #tane_moraの偶数番目にtaneの番号、奇数番目にtaneと同じmoraの番号
   tane_mora=[]
@@ -503,17 +548,46 @@ def heich(text):
           a=None
         tane_mora_flag = tane_mora_flag + 2
       if str(a) not in henkei_elements_used[henkei_flag]:
-        jaro = ls.jaro_winkler(t,n) #ジャロ・ウィンクラー距離
-        if 0.6 <= jaro and jaro <= 1: 
-          tane_word_lst.append(n)
-          henkei_word_lst.append(t)
-          threshold_lst.append(jaro)
-          tane_index_lst.append(tane_flag)
-          henkei_index_lst.append(henkei_flag)
-          print("種表現:",n,"変形表現:",t,"音韻類似度:",jaro)
-          if max_simi < jaro:
-            max_simi = jaro
-            threshold = jaro
+        if len(n) > 1: #種表現は2文字以上
+          if len(n) == 2: #種表現が2文字の場合、変形表現は種表現と同じかそれ以上の文字数
+            if len(t) >= len(n):
+              jaro = ls.jaro_winkler(t,n) #ジャロ・ウィンクラー距離
+              if 0.6 <= jaro and jaro <= 1: 
+                tane_word_lst.append(n)
+                henkei_word_lst.append(t)
+                threshold_lst.append(jaro)
+                tane_index_lst.append(tane_flag)
+                henkei_index_lst.append(henkei_flag)
+                print("種表現:",n,"変形表現:",t,"音韻類似度:",jaro)
+                if max_simi < jaro:
+                  max_simi = jaro
+                  threshold = jaro
+          if len(n) > 2 and len(n) <=4: #種表現が3文字以上4文字以下の場合、変形表現は種表現の文字数-1以上の文字数
+            if len(t)>=len(n)-1:
+              jaro = ls.jaro_winkler(t,n) #ジャロ・ウィンクラー距離
+              if 0.6 <= jaro and jaro <= 1: 
+                tane_word_lst.append(n)
+                henkei_word_lst.append(t)
+                threshold_lst.append(jaro)
+                tane_index_lst.append(tane_flag)
+                henkei_index_lst.append(henkei_flag)
+                print("種表現:",n,"変形表現:",t,"音韻類似度:",jaro)
+                if max_simi < jaro:
+                  max_simi = jaro
+                  threshold = jaro
+          if len(n) > 4: #種表現が5文字以上の場合、変形表現は種表現の文字数-2以上の文字数
+            if len(t)>=len(n)-2:
+              jaro = ls.jaro_winkler(t,n) #ジャロ・ウィンクラー距離
+              if 0.6 <= jaro and jaro <= 1: 
+                tane_word_lst.append(n)
+                henkei_word_lst.append(t)
+                threshold_lst.append(jaro)
+                tane_index_lst.append(tane_flag)
+                henkei_index_lst.append(henkei_flag)
+                print("種表現:",n,"変形表現:",t,"音韻類似度:",jaro)
+                if max_simi < jaro:
+                  max_simi = jaro
+                  threshold = jaro
       henkei_flag = henkei_flag + 1
     tane_flag = tane_flag + 1
         
@@ -522,25 +596,6 @@ def heich(text):
   thres = "適切な音韻類似度"
   if threshold == 0:
     thres = "不適切な音韻類似度"
-
-  #種表現の日本語取得
-  if tane_index != None:
-    tane_word = t_list[tane_index]
-    print("種表現：",tane_word)
-  else:
-    print("種表現：なし")
-
-  #変形表現の日本語取得
-  if henkei_index != None:
-    henkei_word = str(henkei_jp_lst[henkei_index])
-    henkei_word = henkei_word.replace("'","")
-    henkei_word = henkei_word.replace("[","")
-    henkei_word = henkei_word.replace("]","")
-    henkei_word = henkei_word.replace(",","")
-    henkei_word = henkei_word.replace(" ","")
-    print("変形表現：",henkei_word)
-  else:
-    print("変形表現：なし")
 
   #種表現リスト、変形表現リストの日本語取得
   henkeiL_word = []
@@ -569,17 +624,18 @@ def heich(text):
     print("種表現：",tane_word)
     print("変形表現：",henkei_word)
   else:
-    print("種表現：なし")
-    print("変形表現：なし")
-
-  #類似度の高い上位5位の種表現、変形表現、類似度
+    tane_word = "なし"
+    henkei_word = "なし"
+    print("種表現：",tane_word)
+    print("変形表現：",henkei_word)
+  #類似度の高い上位n位の種表現、変形表現、類似度
   rank_tane_lst = []
   rank_henkei_lst = []
   rank_thres_lst = []
   index = None
 
   if tane_word_lst:
-    for i in range(5):
+    for i in range(20):
       if tane_word_lst:
         rank_thres_lst.append(max(threshold_lst))
         index = threshold_lst.index(max(threshold_lst))
@@ -593,11 +649,13 @@ def heich(text):
         break;
 
   if tane_word != "" and henkei_word != "" and thres == "適切な音韻類似度":
+    type = "併置型"
     detected="成功"
   else:
+    type = "不明"
     detected="失敗"
 
-  return(detected, tane_word, henkei_word)
+  return(detected, tane_word, henkei_word, rank_tane_lst, rank_henkei_lst, rank_thres_lst, type)
 
 #パイプラインに追加
 #nlp.add_pipe('Dajare')
