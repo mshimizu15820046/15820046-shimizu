@@ -282,10 +282,11 @@ def find_latent_expression2(org_res_label, res_list, cwml, depth, latent_express
 # 
 def conceptnet(dajare, filepath_output="output_humor.txt"):
     """メイン関数"""
-    f_write = codecs.open(filepath_output, 'a')
+    #f_write = codecs.open(filepath_output, 'a')
 
     for url in URL_LIST:  # url_list: SPARQL endpoints (or Web API) of Knowledge graphs
         cwml = find_content_word_morpheme_list(dajare)
+        #print("形態素内容語:",cwml)
         found = False
         latent_expressions = list()
         res_list = find_resource_list(cwml)  # リソースURIのリスト
@@ -301,19 +302,19 @@ def conceptnet(dajare, filepath_output="output_humor.txt"):
             content_word = ""
             #ic(latent_expressions[0])
             #print(f"駄洒落文：{dajare}\n深さ：{depth} 内容語：{org_res_label} 関係性：{predicate} 向き：{direction} 検出結果：{latent_exp} \n",file=f_write)
-            f_write.flush()
+            #f_write.flush()
             detected = '成功'
             senzai = latent_exp
             henkei = org_res_label
             return(detected, senzai, henkei)
         else:
-            #print("失敗")
+            print("失敗")
             detected = '失敗'
             senzai = 'なし'
             henkei = 'なし'
             return(detected, senzai, henkei)
     
-    f_write.close()
+    #f_write.close()
 
 if __name__ == "__main__":
     """プログラムの実行，

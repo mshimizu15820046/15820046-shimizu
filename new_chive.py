@@ -55,14 +55,14 @@ def new_chive(dajare):
   
     #print('=====================================================================================')
     #print()
-    print('駄洒落文：' + dajare)
+    #print('駄洒落文：' + dajare)
     doc = nlp(dajare)
     punct_non_text = ""
     for token in doc:
         if token.is_punct == False:
             punct_non_text = punct_non_text + token.text
     word=punct_non_text
-    print(word)
+    #print(word)
     doc = nlp(word)
     yomi_lst = []
     yomi_len_lst = []

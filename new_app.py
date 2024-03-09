@@ -1,8 +1,10 @@
 #重畳型
 from chive import chive
 from entity import entity
-from new_conceptnet import new_conceptnet
+from conceptnet import conceptnet
 from kana import kana
+from new_conceptnet import new_conceptnet
+from new_kana import new_kana
 from new_dajare_recognition import heich
 import pandas as pd
 from new_chive import new_chive
@@ -191,44 +193,57 @@ for i in range(len(data)):
         if j == "sentence":
             print("重畳型駄洒落か検証")
             text = data.at[i,j]
+            print("形態素単位")
+            detected5, senzai5, henkei5, sim5, lines5 = chive(text)
+            detected6, senzai6, henkei6, sim6 = entity(text)
+            detected7, senzai7, henkei7 = conceptnet(text)
+            detected8, senzai8, henkei8, sim8 = kana(text)
+            
+            print("文字単位")
+            print("chiVeで検証")
             detected1, tane1, senzai1, henkei1, sim1 = new_chive(text)
-            print('chiVeでの検出結果：' + detected1)
+            print('検出結果：' + detected1)
             print('種表現：', tane1)
             print('潜在表現：', senzai1)
             print('変形表現：', henkei1)
             print(henkei1 , 'と' , senzai1 , 'の類似度：' , sim1)
             print()
+            print("Wikipedia Entity Vectorで検証")
             detected2, tane2, senzai2, henkei2, sim2 = new_entity(text)
-            print('Wikipedia Entity Vectorでの検出結果：', detected2)
+            print('検出結果：', detected2)
             print('種表現：', tane2)
             print('潜在表現：', senzai2)
             print('変形表現：', henkei2)
             print(henkei2 , 'と' , senzai2 , 'の類似度：' , sim2)
 
             print()
+            print("ConceptNetで検証")
             detected3, tane3, senzai3, henkei3 = new_conceptnet(text)
-            print('ConceptNetでの検出結果：' + detected3)
+            print('検出結果：' + detected3)
             print('種表現：', tane3)
             print('潜在表現：', senzai3)
             print('変形表現：', henkei3)
 
             print()
-            detected4, senzai4, henkei4, sim4 = kana(text)
-            print('かな漢字変換：', detected4)
+            print("かな漢字変換で検証")
+            detected4, tane4, senzai4, henkei4, sim4 = new_kana(text)
+            print('検証結果：', detected4)
+            print('種表現：',tane4)
             print('潜在表現：',senzai4)
             print('変形表現：',henkei4)
             print(henkei4 , 'と' , senzai4 , 'のコサイン類似度：' , sim4)
 
             s = detected1, detected2, detected3, detected4
+            s2 = detected5, detected6, detected7, detected8
             print(s)
             #「成功」が2つ以上の手法で取得されたら検出成功
-            if s.count('成功') >= 2:
-                print('\033[32m'+ '検出成功' +'\033[0m')
+            if s2.count('成功') >= 2:
                 if type == "併置型":
                     type = "併置型かつ重畳型"
                 else:
                     type = "重畳型"
-                
+            if s.count('成功') >= 2:
+                print('\033[32m'+ '検出成功' +'\033[0m')
                 if type_m == "併置型":
                     type_m = "併置型かつ重畳型"
                 else:

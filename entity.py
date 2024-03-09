@@ -88,13 +88,13 @@ def entity(dajare):
                               sim = similar_words[y][1]
                               
 
-                              #print('"'+senzai+'"'+' と類似度が高い単語')
-                              #print(similar_words[y])
-                              #print()
-                              #print('"' + henkei + '" と駄洒落文中の "' + text2 + '" の音韻類似度:' , similarity.similarity(text1,text2))
-                              #print()
-                              #print('\033[32m'+ detected +'\033[0m')
-                              #print()
+                              print('"'+senzai+'"'+' と類似度が高い単語')
+                              print(similar_words[y])
+                              print()
+                              print('"' + henkei + '" と駄洒落文中の "' + text2 + '" の音韻類似度:' , similarity.similarity(text1,text2))
+                              print()
+                              print('\033[32m'+ detected +'\033[0m')
+                              print()
                               return(detected, senzai, henkei, sim)
                   except:
                     pass

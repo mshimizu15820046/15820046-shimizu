@@ -57,7 +57,7 @@ def convert_kata_to_hira(katakana):
 
 
 
-def kana(dajare):
+def new_kana(dajare):
     test = dajare
     detected = '失敗'
     tane = 'なし'
@@ -68,7 +68,7 @@ def kana(dajare):
     #print('=====================================================================================')
     #print()
     t_lst = []
-    print('駄洒落文：' + dajare)
+    #print('駄洒落文：' + dajare)
     dajare = dajare.replace('～','ー')
     dajare = dajare.replace('~','ー')
     dajare = dajare.replace('♪','')
@@ -78,7 +78,7 @@ def kana(dajare):
         if token.is_punct == False:
             punct_non_text = punct_non_text + token.text
     word=punct_non_text
-    print(word)
+    #print(word)
     doc = nlp(word)
     yomi_lst = []
     yomi_len_lst = []
@@ -137,7 +137,7 @@ def kana(dajare):
     #print("種表現のエレメント:",tk_number_lst)
     #print("変形表現候補:",henkei_lst)
     #print("変形表現のエレメント:",henkei_element_used)
-    print()
+    #print()
 
     re_k = re.compile(r'^[\u30A0-\u30FFー]+$')
 
@@ -187,8 +187,8 @@ def kana(dajare):
                                                         #コサイン類似度を計算
                                                         cos =float(model.similarity(fixed_tane_data[1][s], fixed_henkei_data[1][h]))
 
-                                                        if cos > 0.55:
-                                                            print("閾値0.7")
+                                                        if cos > 0.6:
+                                                            #print("閾値0.6")
                                                             print("種表現:", tane_kana, "の漢字変換候補：", fixed_tane_data[1])
                                                             print(tane_kana, " ==> ", fixed_tane_data[1][s]," に変換" )
                                                             print("変形表現", henkei_lst[y], "の漢字変換候補：", fixed_henkei_data[1])

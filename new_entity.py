@@ -56,14 +56,14 @@ def new_entity(dajare):
     
     #print('=====================================================================================')
     #print()
-    print('駄洒落文：' + dajare)
+    #print('駄洒落文：' + dajare)
     doc = nlp(dajare)
     punct_non_text = ""
     for token in doc:
         if token.is_punct == False:
             punct_non_text = punct_non_text + token.text
     word = punct_non_text
-    print(word)
+    #print(word)
     doc = nlp(word)
     yomi_lst = []
     yomi_len_lst = []
@@ -122,7 +122,7 @@ def new_entity(dajare):
     #print("種表現のエレメント:",tk_number_lst)
     #print("変形表現候補:",henkei_lst)
     #print("変形表現のエレメント:",henkei_element_used)
-    print()
+    #print()
     for x in range(len(t_lst)):
         
         #類似度が高い上位500件かつ値が0.4以上の単語を取得

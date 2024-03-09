@@ -664,7 +664,7 @@ def heich(text):
           if henkei_h_lst[h][0] not in ['ゃ','ゅ','ょ','ぁ','ぃ','ぅ','ぇ','ぉ'] and henkei_length > 1:
             if len(element_t) > 1:
               jaro = ls.jaro_winkler(element_t, henkei_h_lst[h])
-              if 0.95 <= jaro and jaro <= 1:
+              if 0.85 <= jaro and jaro <= 1:
                 print("種表現:",element_t,"変形表現:",henkei_h_lst[h],"音韻類似度:",jaro)
                 detected_m = "成功"
   
@@ -728,7 +728,7 @@ def heich(text):
         threshold_lst.pop(index)
         tane_word_lst.pop(index)
         henkei_word_lst.pop(index)
-        print(i+1,"位　種表現:",rank_tane_lst[i],"変形表現:",rank_henkei_lst[i],"音韻類似度:",rank_thres_lst[i])
+        #print(i+1,"位　種表現:",rank_tane_lst[i],"変形表現:",rank_henkei_lst[i],"音韻類似度:",rank_thres_lst[i])
       else:
         break;
 

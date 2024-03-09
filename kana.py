@@ -113,14 +113,14 @@ def kana(dajare):
                                             #コサイン類似度が0.4以上であれば潜在表現として検出
                                             if cos > 0.4:
                                                 
-                                                #print(kata[x][0]+'の漢字変換候補：' , fixed_data[1])
+                                                print(kata[x][0]+'の漢字変換候補：' , fixed_data[1])
                                                 #print()
-                                                #print(kata[x][0]+' ===> '+ fixed_data[1][z] + ' に変換')
+                                                print(kata[x][0]+' ===> '+ fixed_data[1][z] + ' に変換')
                                                 # #print(lines2)
-                                                #print(kata[y][0],'と', fixed_data[1][z],'のコサイン類似度：', cos)
+                                                print(kata[y][0],'と', fixed_data[1][z],'のコサイン類似度：', cos)
                                                 #print()
-                                                #print('\033[32m'+'検出成功'+'\033[0m')
-                                                #print()
+                                                print('\033[32m'+'検出成功'+'\033[0m')
+                                                print()
 
                                                 detected = '成功'
                                                 senzai = fixed_data[1][z]
